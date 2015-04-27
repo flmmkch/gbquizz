@@ -1,5 +1,5 @@
 __module_name__ = 'gbquizz.py'
-__module_version__ = '1.2.1'
+__module_version__ = '1.2.2'
 __module_description__ = 'Quizz IRC'
 
 import hexchat
@@ -140,7 +140,7 @@ class Bot:
 			i = i + 1
 
 	def loadQuizz(self):
-		return self.loadQFile() and	self.loadCooldownFile('cooldowns')
+		return self.loadQFile() and self.loadCooldownFile('cooldowns')
 
 	def SendMessage(self, message, channel = None):
 		if not channel:
@@ -317,7 +317,7 @@ class Bot:
 				self.currentQuestion = self.questions[number]
 		if not self.currentQuestion:
 			currentQuestionId = random.randint(0,len(self.questions)-1)
-			cdvalue = min ( 2 / 3 * max(self.questions, key=lambda question: question.cooldown).cooldown , self.timePause.int() * len(self.questions) )
+			cdvalue = 3 / 4 * max(self.questions, key=lambda question: question.cooldown).cooldown
 			i = 0
 			while self.questions[currentQuestionId].cooldown < cdvalue and i < len(self.questions):
 				currentQuestionId = ( currentQuestionId + 1 ) % len(self.questions)
