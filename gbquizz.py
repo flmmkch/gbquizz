@@ -1,5 +1,5 @@
 __module_name__ = 'gbquizz.py'
-__module_version__ = '1.2'
+__module_version__ = '1.2.1'
 __module_description__ = 'Quizz IRC'
 
 import hexchat
@@ -344,33 +344,33 @@ class Bot:
 			elif len(self.currentQuestion.type) > i and self.currentQuestion.type[i] in ['R','N','#','I']:
 				answerIndex = self.pickOneRandomAnswer()
 			if len(self.currentQuestion.type) > i and self.currentQuestion.type[i] == 'N':
-				for answer in self.currentAnswers:
+				for answer in range(0,len(self.currentAnswers)):
 					if answerIndex:
 						printIndex = str(answerIndex+1)
 					else:
-						printIndex = str(self.currentQuestion.answers.index(answer)+1)
+						printIndex = str(answer+1)
 					message_index = message_index + ( '' if message_index == '' else ', ' ) + COLORDEFAULT + ' #' + COLORSPECIAL + printIndex
 				i=i+1
 			elif len(self.currentQuestion.type) > i and self.currentQuestion.type[i] == '#':
-				for answer in self.currentAnswers:
+				for answer in range(0,len(self.currentAnswers)):
 					if answerIndex:
 						answerIndex = str(answerIndex+1)
 					else:
-						answerIndex = str(self.currentQuestion.answers.index(answer)+1)
+						answerIndex = str(answer+1)
 					message_index = message_index + ( '' if message_index == '' else ', ' ) + COLORDEFAULT + ' numéro: ' + COLORSPECIAL + self.currentAnswers[0].strip()
 					self.currentAnswers[0] = answerIndex
 				i=i+1
 			if len(self.currentQuestion.type) > i and self.currentQuestion.type[i] == 'I':
-				for answer in self.currentAnswers:
-					separation = answer.split(':',1)
+				for answer in range(0,len(self.currentAnswers)):
+					separation = self.currentAnswers[answer].split(':',1)
 					if len(separation)>1:
 						printIndex = separation[0]
-						self.currentAnswers[0] = separation[1]
+						self.currentAnswers[answer] = separation[1]
 					else:
 						if answerIndex:
 							printIndex = str(answerIndex)
 						else:
-							printIndex = str(self.currentQuestion.answers.index(answer))
+							printIndex = str(answer)
 					message_index = message_index + ( '' if message_index == '' else ', ' ) + printIndex.strip()
 				i=i+1
 			if len(self.currentQuestion.type) > i and self.currentQuestion.type[i] == 'A':
