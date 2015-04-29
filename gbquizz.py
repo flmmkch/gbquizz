@@ -70,6 +70,7 @@ class Setting:
 	def int(self):
 		return int(self.value)
 	def __del__(self):
+		hexchat.set_pluginpref(self.pluginpref, self.value)
 		hexchat.unhook(self.command)
 
 class Question:
