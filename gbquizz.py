@@ -1,5 +1,5 @@
 __module_name__ = 'gbquizz.py'
-__module_version__ = '1.2.2'
+__module_version__ = '1.3'
 __module_description__ = 'Quizz IRC'
 
 import hexchat
@@ -77,7 +77,7 @@ class Question:
 		self.type = type
 		self.enunciated = enunciated
 		self.answers = answers
-		self.cooldown = sys.maxsize
+		self.cooldown = 0 # or int(self.tick.value) ?
 
 class Player:
 	def __init__(self, name, score = 0, beststreak = 0):
@@ -98,6 +98,7 @@ class Bot:
 		self.multicastEnabled = Setting('gbquizz_multicastenabled', 0, 'QUIZZMULTICAST', '/QUIZZMULTICAST <1 ou 0>: activer ou désactiver le multicast.')
 		self.timePause = Setting('gbquizz_timepause', 15, 'QUIZZTIMEPAUSE', '/QUIZZTIMEPAUSE <temps en secondes>: durée de chaque pause.')
 		self.channel = Setting(None, hexchat.get_info('channel'), 'QUIZZCHANNEL', '/QUIZZCHANNEL <canal>: changer le canal du bot de quizz.')
+		self.tick = Setting('gbquizz_tick', 0, 'QUIZZTICK', '/QUIZZTICK <valeur>: changer la valeur du temps pour le bot.')
 		self.mode = 0
 		self.ignoredList = hexchat.get_pluginpref('gbquizz_ignored').split(' ')
 		self.loadScores()
@@ -283,8 +284,7 @@ class Bot:
 
 	def timerHook(self, userdata):
 		if self.mode > 0:
-			for question in self.questions:
-				question.cooldown = question.cooldown + 1
+			self.tick.setvalue(int(self.tick.value)+1)
 			if self.timer == 0:
 				if self.currentQuestion:
 					printedAnswers = ''
@@ -317,9 +317,9 @@ class Bot:
 				self.currentQuestion = self.questions[number]
 		if not self.currentQuestion:
 			currentQuestionId = random.randint(0,len(self.questions)-1)
-			cdvalue = 3 / 4 * max(self.questions, key=lambda question: question.cooldown).cooldown
+			cdvalue = 2 * min(self.questions, key=lambda question: question.cooldown).cooldown
 			i = 0
-			while self.questions[currentQuestionId].cooldown < cdvalue and i < len(self.questions):
+			while self.questions[currentQuestionId].cooldown > cdvalue and i < len(self.questions):
 				currentQuestionId = ( currentQuestionId + 1 ) % len(self.questions)
 				i = i + 1
 			self.currentQuestion = self.questions[currentQuestionId]
@@ -388,7 +388,7 @@ class Bot:
 
 	def endQuestion(self):
 		self.timer = self.timePause.int()
-		self.currentQuestion.cooldown = 0
+		self.currentQuestion.cooldown = int(self.tick.value)
 		self.currentQuestion = None
 		self.SendMessage(BOLD + COLORDEFAULT + 'Prochaine question dans ' + self.timePause.str() + ' secondes...')
 		self.currentAnswers = []
