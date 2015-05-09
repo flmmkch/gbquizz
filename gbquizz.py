@@ -1,5 +1,5 @@
 __module_name__ = 'gbquizz.py'
-__module_version__ = '1.3'
+__module_version__ = '1.3.1'
 __module_description__ = 'Quizz IRC'
 
 import hexchat
@@ -78,7 +78,7 @@ class Question:
 		self.type = type
 		self.enunciated = enunciated
 		self.answers = answers
-		self.cooldown = 0 # or int(self.tick.value) ?
+		self.cooldown = 0 # or Bot's int(self.tick.value) ?
 
 class Player:
 	def __init__(self, name, score = 0, beststreak = 0):
@@ -114,6 +114,7 @@ class Bot:
 
 	def __del__(self):
 		hexchat.unhook(self.messageHook)
+		hexchat.unhook(self.timerHook)
 
 	def quit(self, userdata):
 		self.writeScores()
@@ -149,8 +150,11 @@ class Bot:
 			channel = self.channel.str()
 		hexchat.command('MSG ' + channel + ' ' + message)
 
-	def stripPhrase(self, phrase):
-		stripped = removeAccents(phrase.strip()).lower()
+	def stripPhrase(self, phrase, **args):
+		if (not 'keepAccents' in args or not args['keepAccents']):
+			stripped = removeAccents(phrase.strip()).lower()
+		else:
+			stripped = phrase.strip().lower()
 		for uselessWord in self.ignoredList:
 			if stripped.startswith(uselessWord.lower()) and len(stripped) > (len(uselessWord)) and uselessWord[-1]=="'" :
 				stripped = stripped[len(uselessWord):].strip()
@@ -318,7 +322,7 @@ class Bot:
 				self.currentQuestion = self.questions[number]
 		if not self.currentQuestion:
 			currentQuestionId = random.randint(0,len(self.questions)-1)
-			cdvalue = 2 * min(self.questions, key=lambda question: question.cooldown).cooldown
+			cdvalue = 1.2 * min(self.questions, key=lambda question: question.cooldown).cooldown
 			i = 0
 			while self.questions[currentQuestionId].cooldown > cdvalue and i < len(self.questions):
 				currentQuestionId = ( currentQuestionId + 1 ) % len(self.questions)
@@ -449,7 +453,7 @@ class Bot:
 
 	def giveHint(self, **args):
 		if self.currentQuestion:
-			solution = self.stripPhrase(self.currentAnswers[0])
+			solution = self.stripPhrase(self.currentAnswers[0], keepAccents = True)
 			try:
 				intval = int(solution)
 				closest = None
