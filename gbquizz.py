@@ -41,6 +41,7 @@ def removeAccentChar(s, i):
 		return ['s', 's']
 	else:
 		return list(unicodedata.normalize('NFD', s[i])[0])
+	
 def removeAccents(s):
 	result = []
 	for i in range(0,len(s)):
@@ -164,7 +165,11 @@ class Bot:
 			if stripped.startswith(uselessWord.lower() + ' ') and len(stripped) > (len(uselessWord)+1):
 				stripped = stripped[len(uselessWord):].strip()
 				break
-		noPunctuation = stripped.strip('.,!;?:')
+		noPunctuation = stripped.replace('.','')
+		noPunctuation = noPunctuation.replace(',','')
+		noPunctuation = noPunctuation.replace('!','')
+		noPunctuation = noPunctuation.replace('?','')
+		noPunctuation = noPunctuation.strip()
 		if len(noPunctuation) > 3:
 			stripped = noPunctuation
 		if len(stripped) > 0:
