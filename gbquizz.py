@@ -1,5 +1,5 @@
 __module_name__ = 'gbquizz.py'
-__module_version__ = '1.3.1'
+__module_version__ = '1.3.2'
 __module_description__ = 'Quizz IRC'
 
 import hexchat
@@ -63,14 +63,17 @@ class Setting:
 			if self.pluginpref:
 				hexchat.set_pluginpref(self.pluginpref, newValue)
 		hexchat.prnt( word[0].upper() + ': ' + str(self.value))
+		return hexchat.EAT_ALL
 	def setvalue(self, new):
-		self.value = new
+		if new:
+			self.value = new
+		if self.pluginpref:
+			hexchat.set_pluginpref(self.pluginpref, self.value)
 	def str(self):
 		return str(self.value)
 	def int(self):
 		return int(self.value)
 	def __del__(self):
-		hexchat.set_pluginpref(self.pluginpref, self.value)
 		hexchat.unhook(self.command)
 
 class Question:
@@ -110,7 +113,6 @@ class Bot:
 		hexchat.hook_server('PRIVMSG', self.messageHook)
 		hexchat.hook_command('QUESTION', self.newQuestion)
 		hexchat.hook_unload(self.quit)
-		self.loadQuizz()
 
 	def __del__(self):
 		hexchat.unhook(self.messageHook)
@@ -162,9 +164,12 @@ class Bot:
 			if stripped.startswith(uselessWord.lower() + ' ') and len(stripped) > (len(uselessWord)+1):
 				stripped = stripped[len(uselessWord):].strip()
 				break
+		noPunctuation = stripped.strip('.,!;?:')
+		if len(noPunctuation) > 3:
+			stripped = noPunctuation
 		if len(stripped) > 0:
-			if stripped[-1] in ['.','!','?']:
-				stripped = stripped[:-1]
+			#if stripped[-1] in ['.','!','?']:
+				#stripped = stripped[:-1]
 			return stripped
 		return phrase.strip().lower()
 
@@ -187,7 +192,7 @@ class Bot:
 			hexchat.prnt('Fichier ' + questionfile.name + ' lu. ' + str(len(self.questions)) + ' questions chargées !')
 			return True
 		except Exception as e:
-			hexchat.prnt('Le fichier ' + self.quizzfile.str() + ' n\'a pas pu être ouvert en lecture.' + str(e))
+			hexchat.prnt('Le fichier \'' + self.quizzfile.str() + '\' n\'a pas pu être ouvert en lecture.' + str(e))
 			if questionfile:
 				questionfile.close()
 			return False
@@ -233,7 +238,10 @@ class Bot:
 	def stop(self, word = [""], word_eol = [""], userdata = None):
 		self.SendMessage(BOLD + COLORDEFAULT + 'Le jeu s\'arrête.')
 		self.mode = 0
-		hexchat.unhook(self.timerHook)
+		try:
+			hexchat.unhook(self.timerHook)
+		except SystemError:
+			hexchat.prnt('Unable to unhook the timer.')
 		self.writeCooldownFile('cooldowns')
 		self.writeScores()
 		return hexchat.EAT_ALL
