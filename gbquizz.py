@@ -1,5 +1,5 @@
 __module_name__ = 'gbquizz.py'
-__module_version__ = '1.3.2'
+__module_version__ = '1.3.3'
 __module_description__ = 'Quizz IRC'
 
 import hexchat
@@ -20,6 +20,8 @@ COLORDEFAULT = '\00300,02'
 COLORQUESTION = '\00302,00'
 COLORSPECIAL = '\00308,02'
 NICKMAXCHARS = 30
+
+HELP_URL = 'http://suntorvic.free.fr/quizz/howto.html'
 
 if not hexchat.get_pluginpref('gbquizz_ignored'):
 	hexchat.set_pluginpref('gbquizz_ignored', 'LE LA LES DE DU DANS L\' THE A UN UNE DES')
@@ -108,16 +110,21 @@ class Bot:
 		self.ignoredList = hexchat.get_pluginpref('gbquizz_ignored').split(' ')
 		self.loadScores()
 		self.currentAnswers = []
-		self.SendMessage(BOLD + COLORDEFAULT + 'Chargement du quizzbot ' + COLORSPECIAL + __module_name__ + COLORDEFAULT + ' version ' + COLORSPECIAL + __module_version__ + COLORDEFAULT + ' ! Envoyez ' + COLORSPECIAL + '!quizz' + COLORDEFAULT + ' pour lancer le jeu. ' + COLORSPECIAL + '!quizzhelp' + COLORDEFAULT + ' pour connaître les commandes.')
 		hexchat.hook_command('QUIZZSTART', self.startQuizz)
 		hexchat.hook_command('QUIZZSTOP', self.stop)
-		hexchat.hook_server('PRIVMSG', self.messageHook)
 		hexchat.hook_command('QUESTION', self.newQuestion)
+		hexchat.hook_server('PRIVMSG', self.messageHook)
+		hexchat.hook_server('JOIN', self.joinHook)
 		hexchat.hook_unload(self.quit)
-
-	def __del__(self):
-		hexchat.unhook(self.messageHook)
-		hexchat.unhook(self.timerHook)
+		
+	#def __del__(self):
+		#hexchat.unhook(self.messageHook)
+		#hexchat.unhook(self.timerHook)
+		#hexchat.unhook(self.joinHook)
+		
+	def joinHook(self, word, word_eol, userdata):
+		self.SendMessage(BOLD + COLORDEFAULT + 'Chargement du quizzbot ' + COLORSPECIAL + __module_name__ + COLORDEFAULT + ' version ' + COLORSPECIAL + __module_version__ + COLORDEFAULT + ' ! Envoyez ' + COLORSPECIAL + '!quizz' + COLORDEFAULT + ' pour lancer le jeu. ' + COLORSPECIAL + '!quizzhelp' + COLORDEFAULT + ' pour connaître les commandes. ' + COLORSPECIAL + HELP_URL + COLORDEFAULT + ' pour l\'aide en ligne.', word[2][1:])
+		return hexchat.EAT_NONE
 
 	def quit(self, userdata):
 		self.writeScores()

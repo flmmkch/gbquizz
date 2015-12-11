@@ -1,0 +1,86 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Aide du Quizzbot #2LO</title>
+<style type="text/css">
+body {
+	margin-right: 10%;
+	margin-left: 10%;
+}
+.help {
+	background: #76bbde;
+	border: 1px solid black;
+	padding: 15px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	max-width: 70%;
+	min-width: 30%;
+	width: intrinsic;
+}
+.code {
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	background: #c7e5a9;
+	font-family: monospace;
+	display: inline-block;
+}
+.IRCmsg {
+	font-family: monospace;
+	color: rgba(255, 255, 255, 0.7);
+	padding-left: 3px;
+	padding-right: 3px;
+	background: rgba(0, 45, 0, 0.7);
+	display: inline-block;
+}
+</style>
+</head>
+<body>
+<h1>Ajouter une question</h1>
+<div class="help"><p>Pour ajouter une question au quizz, envoyez une commande au bot formattée comme suit:</p>
+<div class="code">!quizzadd Quelle est la couleur du cheval blanc d'Henri IV ? \ Blanc</div> <br/>
+<p>Vous pouvez l'envoyer soit sur le canal principal, auquel cas tout le monde verra votre proposition, soit en privé au bot directement.</p>
+</div>
+
+<div class="help"><h3>Réponses multiples</h3>
+<p>Il est possible d'indiquer plusieurs réponses valides pour une même question.</p>
+<div class="code">!quizzadd Quelle est la couleur du cheval blanc d'Henri IV ? \ Blanc \ Noir</div>
+<p>Ici, le bot acceptera n'importe laquelle des deux réponses: <span class="IRCmsg">blanc</span> ou <span class="IRCmsg">noir</span>.</p>
+</div>
+
+<h2>Mot mélangé</h2>
+<div class="help"><h3>Mot mélangé: #S</h3>
+<p>Le bot donne pour indication, en plus du texte précédant l'antislash, un anagramme aléatoire de la réponse.</p>
+<div class="code">!quizzadd #S Indication: couleur \ Blanc</div>
+</div>
+
+<h2>Modificateur action</h2>
+<div class="help"><h3>Action: #A</h3>
+<p>Le bot n'accepte comme réponse que les actions (envoyées avec la commande /me).</p>
+<div class="code">!quizzadd #A Huez comme un cheval \ hue</div>
+<p>Pour gagner le point, il faudra envoyer <span class="IRCmsg">/me hue</span>.</p>
+</div>
+
+<h2>Modificateurs de réponse simple</h2>
+
+<div class="help"><h3>Réponse aléatoire: #R</h3>
+<p>Le bot n'accepte qu'une réponse parmi les différentes réponses possibles. L'unique réponse valide est choisie aléatoirement.</p>
+<div class="code">!quizzadd #R Quelle est la couleur du cheval blanc d'Henri IV ? \ Blanc \ Noir</div>
+<p>Ici, le bot acceptera soit la réponse <span class="IRCmsg">blanc</span>, soit la réponse <span class="IRCmsg">noir</span>. La bonne réponse à donner est déterminée par le bot au moment où la question est posée.</p>
+</div>
+
+<div class="help"><h3>Réponse numérotée: #N</h3>
+<p>Le bot n'accepte qu'une réponse parmi les différentes réponses possibles. L'unique réponse valide est choisie aléatoirement. Pour indication, en plus du texte précédant l'antislash, il est donné le numéro de la réponse valide.</p>
+<div class="code">!quizzadd #N Empereur romain julio-claudien \ Auguste \ Tibère \ Caligula \ Claude \ Néron </div>
+</div>
+
+<div class="help"><h3>Réponse numérotée inverse: ##</h3>
+<p>Le bot sélectionne d'abord un élément dans la liste des réponses (après le premier antislash \) de la même façon que pour une réponse numérotée avec le modificateur #N, mais demande de trouver le numéro correspondant à cet élément. Pour indication, en plus du texte précédant l'antislash, il est donné l'élément.</p>
+<div class="code">!quizzadd ## Empereur romain julio-claudien \ Auguste \ Tibère \ Caligula \ Claude \ Néron </div>
+</div>
+
+<div class="help"><h3>Réponse aléatoire avec indice: #I</h3>
+<p>Le bot n'accepte qu'une réponse parmi les différentes réponses possibles. L'unique réponse valide est choisie aléatoirement. L'élément dans la liste des réponses est divisé en deux parties, séparées par le symbole <b>:</b></p>
+<p>La première partie sera une indication donnée avec la question. La suite sera la réponse à donner.</p>
+<div class="code">!quizzadd #I Chef-lieu de la région \ Île-de-France: Paris \ Provence-Alpes-Côte d'Azur: Marseille \ Bretagne: Rennes</div>
+</div>
+</body>
+</html>
