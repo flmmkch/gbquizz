@@ -36,11 +36,19 @@ body {
 <body>
 <h1>Ajouter une question</h1>
 <div class="help"><p>Pour ajouter une question au quizz, envoyez une commande au bot formattée comme suit:</p>
-<div class="code">!quizzadd Quelle est la couleur du cheval blanc d'Henri IV ? \ Blanc</div> <br/>
+<div class="code">!quizzadd Quelle est la couleur du cheval blanc d'Henri IV ?\Blanc</div> <br/>
 <p>Vous pouvez l'envoyer soit sur le canal principal, auquel cas tout le monde verra votre proposition, soit en privé au bot directement.</p>
+<p>Cette commande est composée de plusieurs éléments:
+<ol>
+<li>L'indicateur <span class="IRCmsg">!quizzadd</span> afin que le bot considère le message comme une commande d'ajout de question</li>
+<li>Le texte de question <span class="IRCmsg">Quelle est la couleur du cheval blanc d'Henri IV ?</span>. Le bot enverra ce texte au canal de quizz quand la question sera posée; il est possible de lui demander de la répéter en lui envoyant la commande <span class="IRCmsg">!question</span>.</li>
+<li>Le séparateur <span class="IRCmsg">\</span> (symbole antislash). La première occurence de ce symbole met fin au texte de question.</li>
+<li>La réponse (ici, <span class="IRCmsg">Blanc</span>) ou la liste des éléments de réponse. Si il y en a plusieurs, ces éléments sont séparés par des antislash \ (voir les rubriques suivantes). Il n'y a pas d'antislash après le dernier élément.</li>
+</ol>
+</p>
 </div>
 
-<div class="help"><h3>Réponses multiples</h3>
+<div class="help"><h3>Réponses alternatives</h3>
 <p>Il est possible d'indiquer plusieurs réponses valides pour une même question.</p>
 <div class="code">!quizzadd Quelle est la couleur du cheval blanc d'Henri IV ? \ Blanc \ Noir</div>
 <p>Ici, le bot acceptera n'importe laquelle des deux réponses: <span class="IRCmsg">blanc</span> ou <span class="IRCmsg">noir</span>.</p>
@@ -82,5 +90,49 @@ body {
 <p>La première partie sera une indication donnée avec la question. La suite sera la réponse à donner.</p>
 <div class="code">!quizzadd #I Chef-lieu de la région \ Île-de-France: Paris \ Provence-Alpes-Côte d'Azur: Marseille \ Bretagne: Rennes</div>
 </div>
+
+<h2>Modificateurs pour les réponses multiples</h2>
+<p>Ces modificateurs permettent de demander plusieurs réponses distinctes, avant de pouvoir passer à la prochaine question.</p>
+
+<div class="help"><h3>Réponses multiples: #M</h3>
+<p>Le quizz demande maintenant que plusieurs éléments de réponses soient donnés.</p>
+<p>Si il n'y a pas de modificateur de sélection multiple, alors le jeu attend que tous les éléments de la liste de réponses soient donnés.</p>
+<div class="code">!quizzadd #M Neveux de Donald \ Riri \ Fifi \ Loulou</div>
+<p>Pour que la question soit complétée, le jeu doit recevoir 3 messages distincts:
+<ul>
+<li><span class="IRCmsg">Riri</span></li>
+<li><span class="IRCmsg">Fifi</span></li>
+<li><span class="IRCmsg">Loulou</span></li>
+</ul>
+</p>
+</div>
+
+<div class="help"><h3>Sélection multiple ordonnée: #MO</h3>
+<p>Tous les éléments de la liste de réponses doivent être donnés, et de plus ils doivent être donnés dans l'ordre.</p>
+<div class="code">!quizzadd #MR Chiffres dans l'ordre \ 0 \ 1 \ 2 \ 3 \ 4 \ 5 \ 6 \ 7 \ 8 \ 9</div>
+</p>
+</div>
+
+<div class="help"><h3>Sélection multiple aléatoire: #MR</h3>
+<p>Les éléments de la liste de réponses à donner sont sélectionnés aléatoirement. Le nombre de réponses sélectionnées est également aléatoire (non nul).</p>
+<div class="code">!quizzadd #MR Chiffres \ 0 \ 1 \ 2 \ 3 \ 4 \ 5 \ 6 \ 7 \ 8 \ 9</div>
+</p>
+</div>
+
+<h2>Modificateurs combinés</h2>
+<div class="help">
+<p>Enfin, il est possible de combiner certains modificateurs afin de varier les plaisirs encore plus. Ainsi, la commande pourra se présenter sous la forme suivante:</p>
+<div class="code">!quizzadd #ABCD Question \ Réponse 1 \ Réponse 2 \ Réponse 3</div>
+<p>Le mot #ABCD sera composé de plusieurs modificateurs, où A, B, C, D seront remplacées par des lettres ou symboles correspondant aux modificateurs vu précédemment.</p>
+<p>Ordre approprié des lettres:</p>
+<ol>
+<li>d'abord la dièse de modification #</li>
+<li>les éventuels modificateurs de sélection multiple doivent être écrits en premiers: M seul ou MR, MO</li>
+<li>un seul modificateur parmi les modificateurs de réponse simple: R, N, # ou I. R ne peut pas être utilisé si il y a déjà un modificateur de sélection multiple.</li>
+<li>le modificateur d'action A, si il est présent, doit se placer en dernier</li>
+</ol>
+<p>Note: #S (pour les mots mélangés) ne se combine avec aucun autre modificateur</p>
+</div>
+
 </body>
 </html>
