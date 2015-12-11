@@ -123,7 +123,9 @@ class Bot:
 		#hexchat.unhook(self.joinHook)
 		
 	def joinHook(self, word, word_eol, userdata):
-		self.SendMessage(BOLD + COLORDEFAULT + 'Chargement du quizzbot ' + COLORSPECIAL + __module_name__ + COLORDEFAULT + ' version ' + COLORSPECIAL + __module_version__ + COLORDEFAULT + ' ! Envoyez ' + COLORSPECIAL + '!quizz' + COLORDEFAULT + ' pour lancer le jeu. ' + COLORSPECIAL + '!quizzhelp' + COLORDEFAULT + ' pour connaître les commandes. ' + COLORSPECIAL + HELP_URL + COLORDEFAULT + ' pour l\'aide en ligne.', word[2][1:])
+		nick = word[0][1:].split('!')[0]
+		if hexchat.nickcmp(nick, hexchat.get_info("nick")) == 0:
+			self.SendMessage(BOLD + COLORDEFAULT + 'Chargement du quizzbot ' + COLORSPECIAL + __module_name__ + COLORDEFAULT + ' version ' + COLORSPECIAL + __module_version__ + COLORDEFAULT + ' ! Envoyez ' + COLORSPECIAL + '!quizz' + COLORDEFAULT + ' pour lancer le jeu. ' + COLORSPECIAL + '!quizzhelp' + COLORDEFAULT + ' pour connaître les commandes. ' + COLORSPECIAL + HELP_URL + COLORDEFAULT + ' pour l\'aide en ligne.', word[2][1:])
 		return hexchat.EAT_NONE
 
 	def quit(self, userdata):
